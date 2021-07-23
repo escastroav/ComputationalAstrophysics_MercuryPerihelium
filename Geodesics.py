@@ -1,16 +1,27 @@
-import Metric as mtr
+import Metric as mt
 import Christoffel as ch
 import Calculus as cl
 import numpy as np
 
-def f01(C, x0, x1, x2, t):
-    return x2[0]
-def f11(C, x0, x1, x2, t):
-    return x2[1]
-def f21(C, x0, x1, x2, t):
-    return x2[2]
-def f31(C, x0, x1, x2, t):
-    return x2[3]
+
+#def f01(C, x0, x1, x2, t):
+#    return x2[0]
+#def f11(C, x0, x1, x2, t):
+#    return x2[1]
+#def f21(C, x0, x1, x2, t):
+#    return x2[2]
+#def f31(C, x0, x1, x2, t):
+#    return x2[3]
+def f2(C, x0, x1, x2, t):
+    f = np.zeros(4)
+    x_11 = np.tensordot(x1, x1, axes=0)
+    f[0] = np.tensordot(C[0,:,:],x_11,axes=2)
+    f[1] = np.tensordot(C[1,:,:],x_11,axes=2)
+    f[2] = np.tensordot(C[2,:,:],x_11,axes=2)
+    f[3] = np.tensordot(C[3,:,:],x_11,axes=2)
+
+    return f
+
 def f02(C, x0, x1, x2, t):
     C0 = C[0,:,:]
     x_11 = np.tensordot(x1, x1, axes=0)
@@ -54,7 +65,7 @@ def f32(C, x0, x1, x2, t):
 
 def SolveGeodesics(g_ij, gij_, x0, x1, x2, t, tmax):
     #f1 = np.array([f01,f11,f21,f31])
-    f2 = np.array([f02,f12,f22,f32])
+    #f2 = np.array([f02,f12,f22,f32])
     t = 0
     data = np.empty((0,11),float)
     C = np.zeros((4,4,4))
@@ -83,7 +94,7 @@ def SolveGeodesics(g_ij, gij_, x0, x1, x2, t, tmax):
         #      f'{x1[3]:.4f}',
         #      f'{x0[0]*np.cos(x0[2])*np.sin(x0[1]):.4f}',
         #      f'{x0[0]*np.sin(x0[2])*np.sin(x0[1]):.4f}')
-        C = ch.ChristoffelSymbol(C, g_ij, gij_, x0)
+        C = ch.ChristoffelSymbol(C, mt.g_ij, mt.gij_, x0)
         cl.RK4(f2,C,x0,x1,x2,t)
     return data
         

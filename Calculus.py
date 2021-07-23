@@ -3,15 +3,15 @@ import numpy as np
 dx = 1.3e-8
 dt = 1.3e-8
 
-def DPartial(i,g,x):
+def DPartial(i,j,k,g,x):
     x[i] -= 2*dx
-    d1 = g(x)
+    d1 = g(x)[j,k]
     x[i] += dx
-    d2 = g(x)
+    d2 = g(x)[j,k]
     x[i] += 2*dx
-    d3 = g(x)
+    d3 = g(x)[j,k]
     x[i] += dx
-    d4 = g(x)
+    d4 = g(x)[j,k]
     x[i] -= 2*dx
 
     return (d1-8*d2+8*d3-d4)/(12*dx)
@@ -23,7 +23,7 @@ def RK4(f2, C, x0, x1, x2, t):
 
     dx01=x2*dt
     dx11=x2*dt
-    for i in range(4): dx21[i]=f2[i](C,x0,x1,x2,t)*dt
+    dx21=f2(C,x0,x1,x2,t)*dt
 
     x0 += 0.5*dx01
     x1 += 0.5*dx11
@@ -31,7 +31,7 @@ def RK4(f2, C, x0, x1, x2, t):
 
     dx02=x2*dt
     dx12=x2*dt
-    for i in range(4): dx22[i]=f2[i](C,x0,x1,x2,t+0.5*dt)*dt
+    dx22=f2(C,x0,x1,x2,t+0.5*dt)*dt
 
     x0 += 0.5*dx02 
     x1 += 0.5*dx12 
@@ -39,7 +39,7 @@ def RK4(f2, C, x0, x1, x2, t):
 
     dx03=x2*dt
     dx13=x2*dt
-    for i in range(4): dx23[i]=f2[i](C,x0,x1,x2,t+0.5*dt)*dt
+    dx23=f2(C,x0,x1,x2,t+0.5*dt)*dt
 
     x0 += dx03 
     x1 += dx13 
@@ -47,7 +47,7 @@ def RK4(f2, C, x0, x1, x2, t):
 
     dx04=x2*dt
     dx14=x2*dt
-    for i in range(4): dx24[i]=f2[i](C,x0,x1,x2,t+dt)*dt
+    dx24=f2(C,x0,x1,x2,t+dt)*dt
 
     x0 += (dx01+2*(dx02+dx03)+dx04)/6.0
     x1 += (dx11+2*(dx12+dx13)+dx14)/6.0

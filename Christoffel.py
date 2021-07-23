@@ -7,18 +7,20 @@ def InitC(C):
     return C
 
 def SqrBrakets(g, x, i, j, k):
-    DiGkj = calc.DPartial(i,g[k,j],x)
-    DjGki = calc.DPartial(j,g[k,i],x)
-    DkGij = calc.DPartial(k,g[i,j],x)
 
+    DiGkj = calc.DPartial(i,k,j,g,x)
+    DjGki = calc.DPartial(j,k,i,g,x)
+    DkGij = calc.DPartial(k,i,j,g,x)
+    
     return 0.5*(DiGkj + DjGki - DkGij)
+    
 
 def Gamma(g_ij, gij_, x, l, i, j):
     ckGamma = 0
-    ckGamma += gij_[l,0](x)*SqrBrakets(g_ij,x,i,j,0)
-    ckGamma += gij_[l,1](x)*SqrBrakets(g_ij,x,i,j,1)
-    ckGamma += gij_[l,2](x)*SqrBrakets(g_ij,x,i,j,2)
-    ckGamma += gij_[l,3](x)*SqrBrakets(g_ij,x,i,j,3)
+    ckGamma += gij_(x)[l,0]*SqrBrakets(g_ij,x,i,j,0)
+    ckGamma += gij_(x)[l,1]*SqrBrakets(g_ij,x,i,j,1)
+    ckGamma += gij_(x)[l,2]*SqrBrakets(g_ij,x,i,j,2)
+    ckGamma += gij_(x)[l,3]*SqrBrakets(g_ij,x,i,j,3)
 
     return ckGamma
 
